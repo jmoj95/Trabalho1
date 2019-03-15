@@ -45,9 +45,12 @@ public class Item3Activity extends AppCompatActivity {
         if (requestCode == RequestCode.ADD && resultCode == ResultCode.ADD) {
             String name = data.getExtras().get("name").toString();
             ContactDAO.getInstance().add(new Contact(name));
+            names.add(name);
+            lstNamesAdapter.notifyDataSetChanged();
         } else if (requestCode == RequestCode.EDIT && resultCode == ResultCode.ADD) {
             String name = data.getExtras().get("name").toString();
             ContactDAO.getInstance().get(selected).setName(name);
+            names.set(selected, name);
             lstNamesAdapter.notifyDataSetChanged();
         } else if (resultCode == ResultCode.CANCEL) {
             // TODO: idk lol
@@ -113,7 +116,11 @@ public class Item3Activity extends AppCompatActivity {
 
     private void deleteSelectedListViewItem() {
         if (selected > -1) {
+            names.clear();
             ContactDAO.getInstance().remove(selected);
+            for (Contact c : ContactDAO.getInstance().getAll()) {
+                names.add(c.getName());
+            }
             lstNamesAdapter.notifyDataSetChanged();
         }
     }
